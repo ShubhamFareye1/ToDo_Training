@@ -4,30 +4,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 @Getter @Setter @NoArgsConstructor
 public class ToDo {
-
+    @NotNull
     private LocalDate dueDate;
-
     private LocalDate createdAt;
 
     private Date modifiedAt;
 
+    @NotEmpty(message = "body should not be null")
     private String body;
 
-    @NotNull(message = "title should not be null")
-    @Min(value = 4 , message = "title should be more then 4 char..")
+    @NotEmpty(message = "title should not be null")
     private String title;
-    @Min(value = 5 ,message = "status should be more then 5 char")
+
+    @NotEmpty(message = "Title should be not empty")
     private String status;
 
-    private User user;
+    @Email(message = "Entered wrong email")
+    private String userMail;
 
     public LocalDate getDueDate() {
         return dueDate;

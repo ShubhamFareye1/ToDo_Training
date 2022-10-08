@@ -7,18 +7,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Required;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Date;
 @Getter @Setter @NoArgsConstructor
 public class User {
-    @NotNull
+    @NotEmpty(message = "Firstname should not empty")
     private String firstName;
 
     private String lastName;
-    @Email
+
+    @Email(message = "Entered mail is wrong")
     private String email;
 
     private boolean verified;
@@ -26,12 +25,17 @@ public class User {
     private LocalDate created;
 
     private Date modified;
-
+    @NotEmpty(message = "Password should not empty")
+//    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$\n",message = "Minimum eight and maximum 15 characters, at least one uppercase letter, one lowercase letter, one number and one special character")
     private String password;
 
+    @NotEmpty(message = "role should not be empty")
     private String role;
 
     private boolean active;
+
+    @NotEmpty(message = "github Username should not be empty")
+    private String githubUsername;
 
 
     public void setPassword(String password) throws Exception {

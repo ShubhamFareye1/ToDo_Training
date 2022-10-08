@@ -1,5 +1,4 @@
 package com.fareye.training.controller;
-
 import com.fareye.training.model.ToDo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ public class ToDoController {
     public List<ToDo> todo() throws  NullPointerException{
         String s=null;
         System.out.println(s.length());
-
         return toDoList;
     }
 
@@ -26,7 +24,7 @@ public class ToDoController {
     public List<ToDo> todo1(@RequestParam String gmail){
         List<ToDo> list = new ArrayList<>();
         for(int i=0;i<toDoList.size();i++){
-            if(gmail.equals(toDoList.get(i).getUser().getEmail())){
+            if(gmail.equals(toDoList.get(i).getUserMail())){
                 list.add(toDoList.get(i));
             }
         }
