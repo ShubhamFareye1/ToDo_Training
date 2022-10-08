@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -18,8 +21,10 @@ public class ToDo {
 
     private String body;
 
+    @NotNull(message = "title should not be null")
+    @Min(value = 4 , message = "title should be more then 4 char..")
     private String title;
-
+    @Min(value = 5 ,message = "status should be more then 5 char")
     private String status;
 
     private User user;

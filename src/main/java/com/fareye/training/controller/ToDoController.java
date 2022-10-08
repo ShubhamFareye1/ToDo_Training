@@ -1,8 +1,11 @@
 package com.fareye.training.controller;
 
 import com.fareye.training.model.ToDo;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +15,10 @@ public class ToDoController {
     List<ToDo> toDoList = new ArrayList<>();
 
     @GetMapping("/todo")
-    public List<ToDo> todo(){
+    public List<ToDo> todo() throws  NullPointerException{
+        String s=null;
+        System.out.println(s.length());
+
         return toDoList;
     }
 
@@ -28,9 +34,9 @@ public class ToDoController {
     }
 
     @PostMapping("/todo")
-    public List<ToDo> todo(@RequestBody ToDo toDo){
+    public ResponseEntity<List<ToDo>> todo(@Valid @RequestBody ToDo toDo){
         toDoList.add(toDo);
-        return toDoList;
+        return new ResponseEntity<>(toDoList, HttpStatus.OK);
     }
 
 }
