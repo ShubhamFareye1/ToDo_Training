@@ -33,6 +33,7 @@ public class ToDoController {
 
     @PostMapping("/todo")
     public ResponseEntity<List<ToDo>> todo(@Valid @RequestBody ToDo toDo){
+
         toDoList.add(toDo);
         return new ResponseEntity<>(toDoList, HttpStatus.OK);
     }

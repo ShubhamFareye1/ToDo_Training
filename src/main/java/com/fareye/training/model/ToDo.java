@@ -19,7 +19,7 @@ public class ToDo {
     @NotEmpty(message = "body should not be null")
     private String body;
 
-    @NotEmpty(message = "title should not be null")
+    @NotEmpty(message = "title should not be null" )
     private String title;
 
     @NotEmpty(message = "Title should be not empty")
@@ -42,6 +42,5 @@ public class ToDo {
         LocalDate now = LocalDate.now();
         this.createdAt = now;
     }
-
 
 }

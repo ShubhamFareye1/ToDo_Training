@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
@@ -37,6 +39,14 @@ public class User {
     @NotEmpty(message = "github Username should not be empty")
     private String githubUsername;
 
+    public void setGithubUsername(String githubUsername) {
+        String url = "http://localhost:8080/avatar?userName="+githubUsername;
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseEntity =restTemplate.getForEntity(url,String.class);
+        String avatar_url = responseEntity.getBody();
+        System.out.println("avatar = "+avatar_url);
+        this.githubUsername = avatar_url;
+    }
 
     public void setPassword(String password) throws Exception {
         EncryptDecryptUtil e = new EncryptDecryptUtil();
