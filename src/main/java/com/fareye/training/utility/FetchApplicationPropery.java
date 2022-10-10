@@ -29,13 +29,9 @@ public class FetchApplicationPropery {
 
             System.out.println("HashMap after adding bonus marks:");
             while (hmIterator.hasNext()) {
-
-                Map.Entry mapElement
-                        = (Map.Entry) hmIterator.next();
+                Map.Entry mapElement = (Map.Entry) hmIterator.next();
                 String value = (String) mapElement.getValue();
-
-                System.out.println(mapElement.getKey() + " : "
-                        + value);
+                System.out.println(mapElement.getKey() + " : " + value);
             }
         } catch (Exception e) {
             System.out.println("Exception: " + e);
@@ -44,4 +40,27 @@ public class FetchApplicationPropery {
         }
         return prop;
     }
+
+    public String getPropValue(String key) throws IOException {
+        Properties prop = null;
+        try {
+            prop = new Properties();
+            String propFileName = "application.properties";
+            inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+            if (inputStream != null) {
+                prop.load(inputStream);
+            } else {
+                throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
+            }
+            result = "Key and Value does not exist in Application Property file";
+            result = prop.getProperty(key);
+
+        } catch (Exception e) {
+            System.out.println("Exception: " + e);
+        } finally {
+            inputStream.close();
+        }
+        return result;
+    }
+
 }

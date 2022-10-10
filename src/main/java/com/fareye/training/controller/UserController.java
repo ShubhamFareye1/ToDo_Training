@@ -12,8 +12,18 @@ import java.util.List;
 public class UserController {
     List<User> users = new ArrayList<>();
     @GetMapping("/user-list")
-    public List<User> hello(){
+    public List<User> userList(){
         return users;
+    }
+
+    @GetMapping("/userName")
+    public User user(@RequestParam String userMail) throws Exception {
+        for(int i=0;i<users.size();i++){
+            if(users.get(i).getEmail().equals(userMail)){
+                return users.get(i);
+            }
+        }
+        throw new Exception("User Not Found");
     }
 
     @PostMapping("/add")
@@ -24,28 +34,30 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public String delete(@RequestParam String email){
+    public String delete(@RequestParam String email) throws Exception {
 
         String u = "User Not Available";
         for(int i=0;i<users.size();i++){
             if(users.get(i).getEmail().equals(email)){
-                u=users.get(i).getFirstName();
+                u="User deleted Successfully";
                 users.remove(i);
+                return u;
             }
         }
-        return u;
+        throw new Exception("User not found");
     }
 
     @PutMapping("/update")
-    public String update(@RequestBody User user1){
+    public String update(@RequestBody User user1) throws Exception {
         String u = "User Not Available";
         for(int i=0;i<users.size();i++){
             if(users.get(i).getEmail().equals(user1.getEmail())){
                 u="Update sucessful";
                 users.set(i,user1);
+                return u;
             }
         }
-        return u;
+        throw new Exception("User Not Found Exception");
     }
 
 }

@@ -1,14 +1,16 @@
 package com.fareye.training.model;
 
+import com.fareye.training.annotations.TitleValidation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @ToString @TitleValidation
 public class ToDo {
     @NotNull
     private LocalDate dueDate;

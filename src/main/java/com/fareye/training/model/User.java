@@ -1,17 +1,15 @@
 package com.fareye.training.model;
-
+import com.fareye.training.service.GitAvatarService;
 import com.fareye.training.utility.EncryptDecryptUtil;
 import com.fareye.training.utility.EncryptionDecryptionUsingHash;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Date;
+
+
 @Getter @Setter @NoArgsConstructor
 public class User {
     @NotEmpty(message = "Firstname should not empty")
@@ -39,15 +37,16 @@ public class User {
     @NotEmpty(message = "github Username should not be empty")
     private String githubUsername;
 
-    public void setGithubUsername(String githubUsername) {
-        String url = "http://localhost:8080/avatar?userName="+githubUsername;
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseEntity =restTemplate.getForEntity(url,String.class);
-        String avatar_url = responseEntity.getBody();
-        System.out.println("avatar = "+avatar_url);
-        this.githubUsername = avatar_url;
+    // we can use custom avatar_url link so that we can fetch link when we pass the username from post username details..
+    public void setGithubUsername(String githubUsername) throws Exception {
+          GitAvatarService a = new GitAvatarService();
+          String avatar_url = a.avatar(githubUsername);
+        //  String avatar_url= "hiiii";
+          System.out.println("avatar = "+avatar_url);
+          this.githubUsername = avatar_url;
     }
 
+    //this following custom setPassword function is used to password encryption and we can remove this following code when we use DB.
     public void setPassword(String password) throws Exception {
         EncryptDecryptUtil e = new EncryptDecryptUtil();
         e.init();
