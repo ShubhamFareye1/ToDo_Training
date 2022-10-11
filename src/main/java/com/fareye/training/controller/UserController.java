@@ -27,7 +27,12 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public List<User> add(@Valid @RequestBody User name){
+    public List<User> add(@Valid @RequestBody User name) throws Exception {
+        for(int i=0;i<users.size();i++){
+            if(users.get(i).getEmail().equals(name.getEmail())){
+                throw new Exception("User already exist");
+            }
+        }
         users.add(name);
         System.out.println(users);
         return users;

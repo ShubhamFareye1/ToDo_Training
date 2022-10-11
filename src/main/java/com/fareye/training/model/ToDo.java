@@ -18,16 +18,16 @@ public class ToDo {
 
     private Date modifiedAt;
 
-    @NotEmpty(message = "body should not be null")
+    @NotEmpty(message = "body : body should not be null")
     private String body;
 
-    @NotEmpty(message = "title should not be null" )
+    @NotEmpty(message = "titile: title should not be null" )
     private String title;
 
-    @NotEmpty(message = "Title should be not empty")
+    @NotEmpty(message = "ststus: status should be not empty")
     private String status;
 
-    @Email(message = "Entered wrong email")
+    @Email(message = "userMail: Entered wrong email")
     private String userMail;
 
     public LocalDate getDueDate() {

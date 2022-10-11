@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = TitleValidator.class)
 public @interface TitleValidation {
     //error message
-    public String message() default "Entered Title is already exist for this user";
+    public String message() default "title: Entered Title is already exist for this user";
     //represents group of constraints
     public Class<?>[] groups() default {};
     //represents additional information about annotation

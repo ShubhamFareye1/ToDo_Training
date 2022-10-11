@@ -1,13 +1,10 @@
 package com.fareye.training.controller;
 import com.fareye.training.model.ToDo;
-import com.fareye.training.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +70,7 @@ public class ToDoController {
         for(int i=0;i<toDoList.size();i++){
             if(toDoList.get(i).getUserMail().equals(todo.getUserMail()) && toDoList.get(i).getTitle().equals(todo.getTitle())){
                 toDoList.add(todo);
-                u = "User data deleted successfully";
+                u = "User data updated successfully";
                 return u;
             }
         }

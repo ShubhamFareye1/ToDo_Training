@@ -9,7 +9,7 @@ public class EncryptionDecryptionUsingHash {
     public String encrypt(String pass){
         for(int i=0;i<pass.length();i++){
             newPassword+=(char)(pass.charAt(i)-key-i);
-            System.out.println((char)(pass.charAt(i)-key));
+           // System.out.println((char)(pass.charAt(i)-key));
         }
         System.out.println("Hash Value = " + newPassword);
         return newPassword;

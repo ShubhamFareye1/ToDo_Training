@@ -4,6 +4,7 @@ import com.fasterxml.classmate.TypeBindings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,13 +28,23 @@ public class MyExceptionHandler {
 
     // next step is to return map instead of List in following code......!!!!!!
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List> exceptionHandler(MethodArgumentNotValidException ex)
+    public ResponseEntity<?> exceptionHandler(MethodArgumentNotValidException ex)
     {
         List list = ex.getBindingResult().getAllErrors().stream()
                 .map(fieldError -> fieldError.getDefaultMessage())
                 .collect(Collectors.toList());
-        System.out.println(list);
+        System.out.println(ex);
         return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+
+//        HashMap<String, String> map = new HashMap<>();
+//        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
+//            String fieldName = error.getField();
+//            String filedMessage = error.getDefaultMessage();
+//            map.put(fieldName, filedMessage);
+//            System.out.println(fieldName + "->" + filedMessage);
+//        }
+//        System.out.println(map);
+//        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
 
     }
 
