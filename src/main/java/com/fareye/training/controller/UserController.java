@@ -1,5 +1,7 @@
 package com.fareye.training.controller;
 
+import com.fareye.training.exception.UserAlredyExistsException;
+import com.fareye.training.exception.UserNotFoundException;
 import com.fareye.training.model.User;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,20 +19,20 @@ public class UserController {
     }
 
     @GetMapping("/userName")
-    public User user(@RequestParam String userMail) throws Exception {
+    public User user(@RequestParam String userMail) throws UserNotFoundException {
         for(int i=0;i<users.size();i++){
             if(users.get(i).getEmail().equals(userMail)){
                 return users.get(i);
             }
         }
-        throw new Exception("User Not Found");
+        throw new UserNotFoundException("No user exist for this email");
     }
 
     @PostMapping("/add")
-    public List<User> add(@Valid @RequestBody User name) throws Exception {
+    public List<User> add(@Valid @RequestBody User name) throws UserAlredyExistsException {
         for(int i=0;i<users.size();i++){
             if(users.get(i).getEmail().equals(name.getEmail())){
-                throw new Exception("User already exist");
+                throw new UserAlredyExistsException("User already exist for this data");
             }
         }
         users.add(name);
@@ -39,7 +41,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public String delete(@RequestParam String email) throws Exception {
+    public String delete(@RequestParam String email) throws RuntimeException {
 
         String u = "User Not Available";
         for(int i=0;i<users.size();i++){
@@ -49,20 +51,20 @@ public class UserController {
                 return u;
             }
         }
-        throw new Exception("User not found");
+        throw new UserNotFoundException("User Not Found this email");
     }
 
     @PutMapping("/update")
-    public String update(@RequestBody User user1) throws Exception {
+    public String update(@RequestBody User user1) throws UserNotFoundException {
         String u = "User Not Available";
         for(int i=0;i<users.size();i++){
             if(users.get(i).getEmail().equals(user1.getEmail())){
-                u="Update sucessful";
+                u="Update successful";
                 users.set(i,user1);
                 return u;
             }
         }
-        throw new Exception("User Not Found Exception");
+        throw new UserNotFoundException("User Not Found Exception");
     }
 
 }

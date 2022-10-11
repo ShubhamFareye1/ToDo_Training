@@ -1,16 +1,18 @@
 package com.fareye.training.controller;
+import com.fareye.training.exception.UserNotFoundException;
 import com.fareye.training.model.ToDo;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class ToDoController {
-
     public List<ToDo> toDoList = new ArrayList<>();
     @Autowired
     UserController user;
@@ -21,7 +23,7 @@ public class ToDoController {
     }
 
     @GetMapping("/todo1")
-    public List<ToDo> todo1(@RequestParam String gmail) throws Exception {
+    public List<ToDo> todo1(@RequestParam String gmail) throws UserNotFoundException {
         List<ToDo> list = new ArrayList<>();
         for(int i=0;i<toDoList.size();i++){
             if(gmail.equals(toDoList.get(i).getUserMail())){
@@ -29,12 +31,12 @@ public class ToDoController {
             }
         }
         if(list.size()==0)
-            throw new Exception("User Not Found");
+            throw new UserNotFoundException("Data Not exist for this user");
         return list;
     }
 
     @PostMapping("/todo")
-    public ResponseEntity<List<ToDo>> todo(@Valid @RequestBody ToDo toDo) throws Exception {
+    public ResponseEntity<List<ToDo>> todo(@Valid @RequestBody ToDo toDo) throws UserNotFoundException {
         boolean userFlag=false;
         for(int i=0;i<user.users.size();i++){
             if(user.users.get(i).getEmail().equals(toDo.getUserMail()))
@@ -47,12 +49,11 @@ public class ToDoController {
             toDoList.add(toDo);
             return new ResponseEntity<>(toDoList, HttpStatus.OK);
         }
-        throw new Exception("User not exist for this mail first add user then add users");
+        throw new UserNotFoundException("User not exist for this mail first add user");
     }
 
     @DeleteMapping("/delete")
-    public String delete(@RequestBody ToDo todo) throws Exception {
-
+    public String delete(@RequestBody ToDo todo) throws RuntimeException {
         String u = "User Not Available";
         for(int i=0;i<toDoList.size();i++){
             if(toDoList.get(i).getUserMail().equals(todo.getUserMail()) && toDoList.get(i).getTitle().equals(todo.getTitle())){
@@ -61,11 +62,11 @@ public class ToDoController {
                 return u;
             }
         }
-        throw new Exception("Data not found");
+        throw new RuntimeException("Data not found!!!");
     }
 
     @PutMapping("/update")
-    public String update(@RequestBody ToDo todo) throws Exception {
+    public String update(@RequestBody ToDo todo) throws UserNotFoundException {
         String u;
         for(int i=0;i<toDoList.size();i++){
             if(toDoList.get(i).getUserMail().equals(todo.getUserMail()) && toDoList.get(i).getTitle().equals(todo.getTitle())){
@@ -74,7 +75,6 @@ public class ToDoController {
                 return u;
             }
         }
-        throw new Exception("UserName not register for this email");
+        throw new UserNotFoundException("UserName not register for this email");
     }
-
 }

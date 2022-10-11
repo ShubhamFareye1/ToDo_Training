@@ -35,17 +35,6 @@ public class MyExceptionHandler {
                 .collect(Collectors.toList());
         System.out.println(ex);
         return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
-
-//        HashMap<String, String> map = new HashMap<>();
-//        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
-//            String fieldName = error.getField();
-//            String filedMessage = error.getDefaultMessage();
-//            map.put(fieldName, filedMessage);
-//            System.out.println(fieldName + "->" + filedMessage);
-//        }
-//        System.out.println(map);
-//        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
-
     }
 
     @ExceptionHandler(Exception.class)
