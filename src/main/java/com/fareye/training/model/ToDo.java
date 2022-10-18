@@ -38,8 +38,6 @@ public class ToDo {
         LocalDateTime now = LocalDateTime.now();
         this.dueDate = dueDate;
     }
-
-
     public void setCreatedAt(LocalDate createdAt) {
         LocalDate now = LocalDate.now();
         this.createdAt = now;

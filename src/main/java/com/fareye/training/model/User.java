@@ -1,4 +1,5 @@
 package com.fareye.training.model;
+import com.fareye.training.service.Data;
 import com.fareye.training.service.GitAvatarService;
 import com.fareye.training.utility.EncryptDecryptUtil;
 import com.fareye.training.utility.EncryptionDecryptionUsingHash;
@@ -12,6 +13,7 @@ import java.util.Date;
 
 @Getter @Setter @NoArgsConstructor
 public class User {
+    int id;
     @NotEmpty(message = "firstName: Firstname should not empty")
     private String firstName;
 
@@ -29,7 +31,7 @@ public class User {
 //    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$\n",message = "Minimum eight and maximum 15 characters, at least one uppercase letter, one lowercase letter, one number and one special character")
     private String password;
 
-    @NotEmpty(message = "role: role should not be empty")
+  //  @NotEmpty(message = "role: role should not be empty")
     private String role;
 
     private boolean active;
@@ -38,23 +40,24 @@ public class User {
     private String githubUsername;
 
 
-    public void setGithubUsername(String githubUsername) throws Exception {
-          GitAvatarService a = new GitAvatarService();
-          String avatar_url = a.avatar(githubUsername);
-          System.out.println("avatar = "+avatar_url);
-          this.githubUsername = avatar_url;
-    }
+//    public void setGithubUsername(String githubUsername) throws Exception {
+//          GitAvatarService a = new GitAvatarService();
+//          String avatar_url = a.avatar(githubUsername);
+//          System.out.println("avatar = "+avatar_url);
+//          this.githubUsername = avatar_url;
+//    }
+
 
     //this following custom setPassword function is used to password encryption and we can remove this following code when we use DB.
-    public void setPassword(String password) throws Exception {
-        EncryptDecryptUtil e = new EncryptDecryptUtil();
-        e.init();
-        this.password = e.encrypt(password);
-        //System.out.println(password);
-        //System.out.println(e.decrypt(this.password));
-        EncryptionDecryptionUsingHash he = new EncryptionDecryptionUsingHash();
-        String temp = he.encrypt("Shubham");
-        //System.out.println(he.decrypt(temp));
-    }
+//    public void setPassword(String password) throws Exception {
+//        EncryptDecryptUtil e = new EncryptDecryptUtil();
+//        e.init();
+//        this.password = e.encrypt(password);
+//        //System.out.println(password);
+//        //System.out.println(e.decrypt(this.password));
+//        EncryptionDecryptionUsingHash he = new EncryptionDecryptionUsingHash();
+//        String temp = he.encrypt("Shubham");
+//        //System.out.println(he.decrypt(temp));
+//    }
 
 }
