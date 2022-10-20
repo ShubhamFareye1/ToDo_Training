@@ -1,12 +1,10 @@
 package com.fareye.training.controller;
-
 import com.fareye.training.exception.UserAlredyExistsException;
 import com.fareye.training.exception.UserNotFoundException;
 import com.fareye.training.model.User;
 import com.fareye.training.service.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
 
@@ -26,6 +24,7 @@ public class UserController {
     @GetMapping("/userName")
     @CrossOrigin(origins = "http://localhost:3000")
     public User user(@RequestParam String userMail) throws UserNotFoundException {
+        System.out.println(userMail);
         for(int i=0;i<data.users.size();i++){
             if(data.users.get(i).getEmail().equals(userMail)){
                 return data.users.get(i);
@@ -64,6 +63,10 @@ public class UserController {
         throw new UserNotFoundException("User Not Found this email");
     }
 
+
+    public int addNumber(int a, int b){
+        return a+b;
+    }
     @PutMapping("/update")
     @CrossOrigin(origins = "http://localhost:3000")
     public String update(@RequestBody User user1) throws UserNotFoundException {

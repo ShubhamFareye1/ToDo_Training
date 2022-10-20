@@ -1,5 +1,6 @@
 package com.fareye.training.controller;
 
+import com.fareye.training.exception.UserNotFoundException;
 import com.fasterxml.classmate.TypeBindings;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,15 @@ public class MyExceptionHandler {
         System.out.println(ex);
         return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> exceptionHandler(UserNotFoundException ex)
+    {
+        String message = ex.getMessage();
+        System.out.println(ex);
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
+
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> exception(Exception ex){

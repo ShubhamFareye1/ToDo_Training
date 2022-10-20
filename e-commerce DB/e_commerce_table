@@ -1,0 +1,21 @@
+-- create database e_commerce;
+
+-- \c e_commerce; for db connection
+
+-- create table product_category ( id serial primary key, name varchar(20), description varchar(50));
+
+-- create table users ( id serial primary key, full_name varchar(50),mobile_no varchar(50),DOB DATE , password varchar(20));
+
+--  create table product ( id serial primary key, name varchar(30),description varchar(50), price int , quantity int,category_id int,CONSTRAINT fk_product_category FOREIGN KEY(category_id)  REFERENCES product_category(id)); 
+
+--  create table product_review(id serial primary key,product_id int,review_star NUMERIC (1, 1) ,review varchar(500),CONSTRAINT fk_product FOREIGN KEY(product_id)  REFERENCES product(id));
+
+-- create table coupon(id serial primary key,code varchar (20) unique, valid_upto DATE);
+
+--  create table orders(id serial primary key , user_id int, total_amt int,coupon_code varchar(20),order_discount int,CONSTRAINT fk_users FOREIGN KEY(user_id)  REFERENCES users(id),CONSTRAINT fk_coupon FOREIGN KEY(coupon_code)  REFERENCES coupon(code));
+
+-- create table transaction(id serial primary key,order_id int,status bool,CONSTRAINT fk_orders FOREIGN KEY(order_id)  REFERENCES orders(id));
+
+-- create table order_item(id serial primary key,order_id int, product_id int,quantity int,CONSTRAINT fk_orders FOREIGN KEY(order_id) REFERENCES orders(id),CONSTRAINT fk_product FOREIGN KEY(product_id) REFERENCES product(id));
+
+-- 

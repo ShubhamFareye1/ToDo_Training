@@ -20,7 +20,6 @@ public class ToDoController {
     @Autowired
     UserController user;
 
-
     @GetMapping("/todo")
     public List<ToDo> todoList() throws  NullPointerException{
         return data.toDoList;
