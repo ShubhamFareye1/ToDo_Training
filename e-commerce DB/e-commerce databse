@@ -1,0 +1,950 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.12 (Ubuntu 12.12-0ubuntu0.20.04.1)
+-- Dumped by pg_dump version 12.12 (Ubuntu 12.12-0ubuntu0.20.04.1)
+
+-- Started on 2022-10-21 15:35:23 IST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 217 (class 1259 OID 16556)
+-- Name: order_item; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.order_item (
+    id integer NOT NULL,
+    order_id integer,
+    product_id integer,
+    quantity integer
+);
+
+
+ALTER TABLE public.order_item OWNER TO postgres;
+
+--
+-- TOC entry 213 (class 1259 OID 16517)
+-- Name: orders; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.orders (
+    id integer NOT NULL,
+    user_id integer,
+    total_amt integer,
+    coupon_code character varying(20),
+    order_discount integer,
+    order_date date
+);
+
+
+ALTER TABLE public.orders OWNER TO postgres;
+
+--
+-- TOC entry 218 (class 1259 OID 16587)
+-- Name: order_details; Type: VIEW; Schema: public; Owner: pgadmin
+--
+
+CREATE VIEW public.order_details AS
+ SELECT orders.id AS order_id,
+    orders.order_date,
+    order_item.product_id
+   FROM (public.orders
+     LEFT JOIN public.order_item ON ((orders.id = order_item.order_id)))
+  WHERE ((orders.order_date + 90) > now());
+
+
+ALTER TABLE public.order_details OWNER TO pgadmin;
+
+--
+-- TOC entry 207 (class 1259 OID 16465)
+-- Name: product; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.product (
+    id integer NOT NULL,
+    name character varying(30),
+    description character varying(50),
+    price integer,
+    quantity integer,
+    category_id integer
+);
+
+
+ALTER TABLE public.product OWNER TO postgres;
+
+--
+-- TOC entry 205 (class 1259 OID 16457)
+-- Name: product_category; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.product_category (
+    id integer NOT NULL,
+    name character varying(20),
+    description character varying(50)
+);
+
+
+ALTER TABLE public.product_category OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 16591)
+-- Name: product_order_details; Type: VIEW; Schema: public; Owner: pgadmin
+--
+
+CREATE VIEW public.product_order_details AS
+ SELECT order_details.order_id,
+    order_details.order_date,
+    order_details.product_id,
+    product.category_id
+   FROM (public.order_details
+     LEFT JOIN public.product ON ((order_details.product_id = product.id)));
+
+
+ALTER TABLE public.product_order_details OWNER TO pgadmin;
+
+--
+-- TOC entry 220 (class 1259 OID 16595)
+-- Name: category_order_details; Type: VIEW; Schema: public; Owner: pgadmin
+--
+
+CREATE VIEW public.category_order_details AS
+ SELECT product_category.id,
+    product_category.name,
+    product_order_details.order_date,
+    product_order_details.order_id
+   FROM (public.product_category
+     RIGHT JOIN public.product_order_details ON ((product_category.id = product_order_details.category_id)));
+
+
+ALTER TABLE public.category_order_details OWNER TO pgadmin;
+
+--
+-- TOC entry 221 (class 1259 OID 16599)
+-- Name: category_order_details1; Type: VIEW; Schema: public; Owner: pgadmin
+--
+
+CREATE VIEW public.category_order_details1 AS
+ SELECT product_category.id,
+    product_category.name,
+    product_order_details.order_date,
+    product_order_details.order_id
+   FROM (public.product_category
+     LEFT JOIN public.product_order_details ON ((product_category.id = product_order_details.category_id)));
+
+
+ALTER TABLE public.category_order_details1 OWNER TO pgadmin;
+
+--
+-- TOC entry 211 (class 1259 OID 16494)
+-- Name: coupon; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.coupon (
+    id integer NOT NULL,
+    code character varying(20),
+    valid_upto date
+);
+
+
+ALTER TABLE public.coupon OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1259 OID 16492)
+-- Name: coupon_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.coupon_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.coupon_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3078 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: coupon_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.coupon_id_seq OWNED BY public.coupon.id;
+
+
+--
+-- TOC entry 216 (class 1259 OID 16554)
+-- Name: order_item_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.order_item_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.order_item_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3080 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: order_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.order_item_id_seq OWNED BY public.order_item.id;
+
+
+--
+-- TOC entry 212 (class 1259 OID 16515)
+-- Name: orders_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.orders_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.orders_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3082 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.orders_id_seq OWNED BY public.orders.id;
+
+
+--
+-- TOC entry 204 (class 1259 OID 16455)
+-- Name: product_category_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.product_category_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.product_category_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3084 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: product_category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.product_category_id_seq OWNED BY public.product_category.id;
+
+
+--
+-- TOC entry 206 (class 1259 OID 16463)
+-- Name: product_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.product_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.product_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3086 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: product_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.product_id_seq OWNED BY public.product.id;
+
+
+--
+-- TOC entry 209 (class 1259 OID 16478)
+-- Name: product_review; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.product_review (
+    id integer NOT NULL,
+    product_id integer,
+    review_star integer,
+    review character varying(500)
+);
+
+
+ALTER TABLE public.product_review OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1259 OID 16476)
+-- Name: product_review_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.product_review_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.product_review_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3089 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: product_review_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.product_review_id_seq OWNED BY public.product_review.id;
+
+
+--
+-- TOC entry 215 (class 1259 OID 16535)
+-- Name: transaction; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.transaction (
+    id integer NOT NULL,
+    order_id integer,
+    status boolean
+);
+
+
+ALTER TABLE public.transaction OWNER TO postgres;
+
+--
+-- TOC entry 214 (class 1259 OID 16533)
+-- Name: transaction_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.transaction_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.transaction_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3092 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: transaction_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.transaction_id_seq OWNED BY public.transaction.id;
+
+
+--
+-- TOC entry 203 (class 1259 OID 16447)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    full_name character varying(50),
+    mobile_no character varying(50),
+    dob date,
+    password character varying(20)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- TOC entry 202 (class 1259 OID 16445)
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3095 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- TOC entry 2893 (class 2604 OID 16497)
+-- Name: coupon id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.coupon ALTER COLUMN id SET DEFAULT nextval('public.coupon_id_seq'::regclass);
+
+
+--
+-- TOC entry 2896 (class 2604 OID 16559)
+-- Name: order_item id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.order_item ALTER COLUMN id SET DEFAULT nextval('public.order_item_id_seq'::regclass);
+
+
+--
+-- TOC entry 2894 (class 2604 OID 16520)
+-- Name: orders id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orders ALTER COLUMN id SET DEFAULT nextval('public.orders_id_seq'::regclass);
+
+
+--
+-- TOC entry 2891 (class 2604 OID 16468)
+-- Name: product id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product ALTER COLUMN id SET DEFAULT nextval('public.product_id_seq'::regclass);
+
+
+--
+-- TOC entry 2890 (class 2604 OID 16460)
+-- Name: product_category id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product_category ALTER COLUMN id SET DEFAULT nextval('public.product_category_id_seq'::regclass);
+
+
+--
+-- TOC entry 2892 (class 2604 OID 16481)
+-- Name: product_review id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product_review ALTER COLUMN id SET DEFAULT nextval('public.product_review_id_seq'::regclass);
+
+
+--
+-- TOC entry 2895 (class 2604 OID 16538)
+-- Name: transaction id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transaction ALTER COLUMN id SET DEFAULT nextval('public.transaction_id_seq'::regclass);
+
+
+--
+-- TOC entry 2889 (class 2604 OID 16450)
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- TOC entry 3061 (class 0 OID 16494)
+-- Dependencies: 211
+-- Data for Name: coupon; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.coupon (id, code, valid_upto) FROM stdin;
+1	FEST10	2022-10-30
+2	FEST20	2022-09-30
+\.
+
+
+--
+-- TOC entry 3067 (class 0 OID 16556)
+-- Dependencies: 217
+-- Data for Name: order_item; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.order_item (id, order_id, product_id, quantity) FROM stdin;
+1	1	2	1
+2	2	1	5
+3	3	1	7
+4	4	1	1
+5	5	4	1
+\.
+
+
+--
+-- TOC entry 3063 (class 0 OID 16517)
+-- Dependencies: 213
+-- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.orders (id, user_id, total_amt, coupon_code, order_discount, order_date) FROM stdin;
+1	1	40000	FEST10	4000	2022-10-19
+2	2	250000	FEST10	25000	2022-10-20
+3	3	350000	FEST10	35000	2022-10-20
+4	1	50000	FEST10	5000	2022-10-20
+5	1	700	FEST10	70	2022-10-20
+\.
+
+
+--
+-- TOC entry 3057 (class 0 OID 16465)
+-- Dependencies: 207
+-- Data for Name: product; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.product (id, name, description, price, quantity, category_id) FROM stdin;
+1	iphone 13	this mobile is belongs to apple phones	500000	10	1
+2	iphone 12	this phone is belongs to apple mobile units.	40000	10	1
+3	iphone 11	this phone is belongs to apple mobile units.	30000	10	1
+4	chair	this is for home and bedroom chair for regular use	700	50	2
+5	hammer	hammer for hamming	200	50	3
+\.
+
+
+--
+-- TOC entry 3055 (class 0 OID 16457)
+-- Dependencies: 205
+-- Data for Name: product_category; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.product_category (id, name, description) FROM stdin;
+1	electronic	all electric items covers in this catrgory
+2	furniture	this category is for all the home furniture 
+3	tools	all the tools related to hardware
+\.
+
+
+--
+-- TOC entry 3059 (class 0 OID 16478)
+-- Dependencies: 209
+-- Data for Name: product_review; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.product_review (id, product_id, review_star, review) FROM stdin;
+2	1	3	this is good product but price is high
+1	1	4	this is good product but price is high
+3	1	5	this is good product but price is high
+\.
+
+
+--
+-- TOC entry 3065 (class 0 OID 16535)
+-- Dependencies: 215
+-- Data for Name: transaction; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.transaction (id, order_id, status) FROM stdin;
+1	1	f
+2	1	f
+3	1	t
+\.
+
+
+--
+-- TOC entry 3053 (class 0 OID 16447)
+-- Dependencies: 203
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, full_name, mobile_no, dob, password) FROM stdin;
+1	shubham patidar	7566662151	1997-07-20	shubh123
+2	Divyaraj singh	7566662131	1998-10-20	divya123
+3	Rupesh patidar	7566343441	1995-10-20	rupesh1802
+4	Rahul patidar	7566343442	1995-10-21	rahul1802
+\.
+
+
+--
+-- TOC entry 3097 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: coupon_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.coupon_id_seq', 1, false);
+
+
+--
+-- TOC entry 3098 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: order_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.order_item_id_seq', 1, true);
+
+
+--
+-- TOC entry 3099 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: orders_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.orders_id_seq', 1, false);
+
+
+--
+-- TOC entry 3100 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: product_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.product_category_id_seq', 1, false);
+
+
+--
+-- TOC entry 3101 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.product_id_seq', 1, false);
+
+
+--
+-- TOC entry 3102 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: product_review_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.product_review_id_seq', 1, false);
+
+
+--
+-- TOC entry 3103 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: transaction_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.transaction_id_seq', 1, false);
+
+
+--
+-- TOC entry 3104 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+
+
+--
+-- TOC entry 2906 (class 2606 OID 16501)
+-- Name: coupon coupon_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.coupon
+    ADD CONSTRAINT coupon_code_key UNIQUE (code);
+
+
+--
+-- TOC entry 2908 (class 2606 OID 16499)
+-- Name: coupon coupon_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.coupon
+    ADD CONSTRAINT coupon_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2914 (class 2606 OID 16561)
+-- Name: order_item order_item_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.order_item
+    ADD CONSTRAINT order_item_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2910 (class 2606 OID 16522)
+-- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT orders_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2900 (class 2606 OID 16462)
+-- Name: product_category product_category_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product_category
+    ADD CONSTRAINT product_category_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2902 (class 2606 OID 16470)
+-- Name: product product_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product
+    ADD CONSTRAINT product_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2904 (class 2606 OID 16486)
+-- Name: product_review product_review_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product_review
+    ADD CONSTRAINT product_review_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2912 (class 2606 OID 16540)
+-- Name: transaction transaction_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transaction
+    ADD CONSTRAINT transaction_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2898 (class 2606 OID 16452)
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2918 (class 2606 OID 16528)
+-- Name: orders fk_coupon; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT fk_coupon FOREIGN KEY (coupon_code) REFERENCES public.coupon(code);
+
+
+--
+-- TOC entry 2919 (class 2606 OID 16541)
+-- Name: transaction fk_orders; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transaction
+    ADD CONSTRAINT fk_orders FOREIGN KEY (order_id) REFERENCES public.orders(id);
+
+
+--
+-- TOC entry 2920 (class 2606 OID 16562)
+-- Name: order_item fk_orders; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.order_item
+    ADD CONSTRAINT fk_orders FOREIGN KEY (order_id) REFERENCES public.orders(id);
+
+
+--
+-- TOC entry 2916 (class 2606 OID 16487)
+-- Name: product_review fk_product; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product_review
+    ADD CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES public.product(id);
+
+
+--
+-- TOC entry 2921 (class 2606 OID 16567)
+-- Name: order_item fk_product; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.order_item
+    ADD CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES public.product(id);
+
+
+--
+-- TOC entry 2915 (class 2606 OID 16471)
+-- Name: product fk_product_category; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.product
+    ADD CONSTRAINT fk_product_category FOREIGN KEY (category_id) REFERENCES public.product_category(id);
+
+
+--
+-- TOC entry 2917 (class 2606 OID 16523)
+-- Name: orders fk_users; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orders
+    ADD CONSTRAINT fk_users FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- TOC entry 3073 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: TABLE order_item; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.order_item TO pgadmin;
+
+
+--
+-- TOC entry 3074 (class 0 OID 0)
+-- Dependencies: 213
+-- Name: TABLE orders; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.orders TO pgadmin;
+
+
+--
+-- TOC entry 3075 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: TABLE product; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.product TO pgadmin;
+
+
+--
+-- TOC entry 3076 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: TABLE product_category; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.product_category TO pgadmin;
+
+
+--
+-- TOC entry 3077 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: TABLE coupon; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.coupon TO pgadmin;
+
+
+--
+-- TOC entry 3079 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: SEQUENCE coupon_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.coupon_id_seq TO pgadmin;
+
+
+--
+-- TOC entry 3081 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: SEQUENCE order_item_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.order_item_id_seq TO pgadmin;
+
+
+--
+-- TOC entry 3083 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: SEQUENCE orders_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.orders_id_seq TO pgadmin;
+
+
+--
+-- TOC entry 3085 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: SEQUENCE product_category_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.product_category_id_seq TO pgadmin;
+
+
+--
+-- TOC entry 3087 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: SEQUENCE product_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.product_id_seq TO pgadmin;
+
+
+--
+-- TOC entry 3088 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: TABLE product_review; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.product_review TO pgadmin;
+
+
+--
+-- TOC entry 3090 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: SEQUENCE product_review_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.product_review_id_seq TO pgadmin;
+
+
+--
+-- TOC entry 3091 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: TABLE transaction; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.transaction TO pgadmin;
+
+
+--
+-- TOC entry 3093 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: SEQUENCE transaction_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.transaction_id_seq TO pgadmin;
+
+
+--
+-- TOC entry 3094 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: TABLE users; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON TABLE public.users TO pgadmin;
+
+
+--
+-- TOC entry 3096 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: SEQUENCE users_id_seq; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE public.users_id_seq TO pgadmin;
+
+
+-- Completed on 2022-10-21 15:35:23 IST
+
+--
+-- PostgreSQL database dump complete
+--
+

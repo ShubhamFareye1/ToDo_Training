@@ -1,3 +1,6 @@
+
+----------- CREATE TABLE QUERY -----------------------
+
 -- create database e_commerce;
 
 -- \c e_commerce; for db connection

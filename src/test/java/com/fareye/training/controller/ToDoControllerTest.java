@@ -17,20 +17,20 @@ class ToDoControllerTest {
   //  private Object ;
 
     @Test
-    void todoList() {
+    void getToDOs() {
         ToDo todo = new ToDo();
         todo.setTitle("diwali dhamaka");
         todo.setBody("diwali gift by Fareye");
-        todo.setUserMail("shubham.patidar1@getfareye.com");
+        todo.setUserMail("shubham.patidar2@getfareye.com");
         todo.setDueDate(LocalDate.parse("2022-10-30"));
         RestTemplate rs = new RestTemplate();
-        ToDo[] todo1 = rs.getForObject("http://localhost:8080/todo",ToDo[].class);
+        ToDo[] todo1 = rs.getForObject("http://localhost:8080/todo/list",ToDo[].class);
         assertEquals(todo1[0].getUserMail(),todo.getUserMail());
 
     }
 
     @Test
-    void todo1() throws ParseException {
+    void getTodo() throws ParseException {
         ToDo todo = new ToDo();
         todo.setTitle("diwali dhamaka");
         todo.setBody("diwali gift by Fareye");
@@ -38,7 +38,7 @@ class ToDoControllerTest {
         todo.setDueDate(LocalDate.parse("2022-10-30"));
         RestTemplate rs = new RestTemplate();
         String email = "shubham.patidar1@getfareye.com";
-        ToDo[] todoObj = rs.getForObject("http://localhost:8080/todo1?gmail="+email,ToDo[].class);
+        ToDo[] todoObj = rs.getForObject("http://localhost:8080/todo?gmail="+email,ToDo[].class);
         System.out.println(todoObj.toString());
 //        JSONParser parser = new JSONParser();
         // Gson
@@ -50,7 +50,7 @@ class ToDoControllerTest {
     }
 
     @Test
-    void todo() {
+    void postToDo() {
         ToDo todo = new ToDo();
         todo.setTitle("diwali dhamaka");
         todo.setBody("diwali gift by Fareye");
@@ -64,18 +64,19 @@ class ToDoControllerTest {
     }
 
     @Test
-    void delete() {
+    void deleteTodo() {
         ToDo todo = new ToDo();
         todo.setTitle("diwali dhamaka");
         todo.setUserMail("shubham.patidar1@getfareye.com");
         RestTemplate rs = new RestTemplate();
+        rs.delete("http://localhost:8080/todo",todo);
        // rs.delete("http://localhost:8080/delete",todo);
        // rs.delete("http://localhost:8080/delete",todo);
 
     }
 
     @Test
-    void update() {
+    void updateTodo() {
         ToDo todo = new ToDo();
         todo.setTitle("diwali dhamaka");
         todo.setBody("diwali gift by Fareye");
@@ -83,7 +84,7 @@ class ToDoControllerTest {
         todo.setDueDate(LocalDate.parse("2022-10-30"));
         todo.setStatus("Not Completed Yet Complete it soon");
         RestTemplate rs = new RestTemplate();
-        rs.put("http://localhost:8080/update",todo);
+        rs.put("http://localhost:8080/todo",todo);
 
         //assertEquals(result[0].getUserMail(),todo.getUserMail());
     }

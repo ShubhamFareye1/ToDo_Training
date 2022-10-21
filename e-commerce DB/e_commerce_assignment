@@ -1,0 +1,145 @@
+
+-- ###################--ASSIGNMENT--################## 
+
+-- -- 1. find highly repeated users
+	-- select * from users
+	-- where id=(select user_id from orders group by user_id order by count(*) desc LIMIT 1);
+
+-- -- 2. find user who has done maximum and minimum payments.
+	-- select * from users
+	-- where id = (select user_id from orders group by user_id order by sum(total_amt) desc LIMIT 1);
+
+-- -- 3. find user who has done minimum payments
+	-- select * from users
+	-- where id = (select user_id from orders group by user_id order by sum(total_amt) asc LIMIT 1);
+
+-- -- 4. find the product that has super hit.
+	-- select * from product
+	-- where id = (select product_id from order_item group by product_id order by sum(quantity) desc limit 1);
+
+-- -- 5. find the product that has super flop.
+	-- select * from product 
+	-- where id = (select product_id from order_item group by product_id order by sum(quantity) asc limit 1);
+
+-- -- 6. find the failed transaction for a user.
+	-- 	select users.id , full_name , order_id , status  from users
+	-- 	right join orders on users.id=orders.id 
+	-- 	right join transaction on orders.id=transaction.order_id 
+	-- 	where status='false' ;
+
+-- --  7. find total discount a user has availed in last 6 month.
+	-- select * from users 
+	-- where id = (select user_id from orders group by user_id order by sum(order_discount) desc limit 1 );
+
+-- -- it will print the username with total discount
+	-- 	select full_name , sum(order_discount) as total_discount 
+	-- 	from users 
+	-- 	right join orders 
+	-- 	on users.id=orders.user_id 
+	-- 	group by  full_name order by total_discount;
+
+
+-- -- 8. find expired coupons
+	-- select * from coupon where valid_upto<(select date('now'));
+  
+  
+-- -- 9. find the product with highest review and lowest review.
+	-- select * from product_review;
+	-- insert into product_review values(3,1,5,'this is good product but price is high');
+ 
+    --  Highest review
+	
+	-- 	 select product.name , avg(product_review.review_star) as review from 
+	-- 	 product right join product_review
+	-- 	 on product.id=product_review.product_id 
+	-- 	 group by product.id 
+	-- 	 order by product.id desc;
+
+	--  Lowest review
+	
+	--  select product.name , avg(product_review.review_star) as review from 
+	--  product right join product_review
+	--  on product.id=product_review.product_id 
+	--  group by product.id 
+	--  order by product.id asc;
+
+-- -- 10. find the order where the item quantity is more then 4.
+
+	-- insert into orders values(2,2,250000,'FEST10','25000','20-10-2022');
+	-- insert into orders values(3,3,350000,'FEST10','35000','20-10-2022');
+	-- insert into orders values(4,1,50000,'FEST10','5000','20-10-2022');
+	-- insert into order_item values(2,2,1,5);
+	-- insert into order_item values(3,3,1,7);
+	-- insert into order_item values(4,4,1,1);
+
+	-- select * from orders inner join order_item on orders.id=order_item.order_id where order_item.quantity>4;
+
+-- -- 11. find the category from which maximum and minimum order placed in last quarter.
+
+	-- insert into product_category values(2,'furniture','this category is for all the home furniture ');
+	-- insert into order_item values(5,5,4,1);
+	-- insert into product values(4,'chair','this is for home and bedroom chair for regular use',700,50,2);
+	-- insert into orders values(5,1,700,'FEST10',70,'20-10-2022');
+	
+	-- -- VIEW1: Create view for order table and order item table....
+	--  create view order_details as
+	--  select  orders.id as order_id, order_date , product_id
+    --	from orders
+	--	left join order_item
+	--	on orders.id=order_item.order_id 
+	--	where order_date+90>now();
+	
+	-- -- VIEW2: Creating the view for table prodct and VIEW1
+	--  create view product_order_details 
+	--  as select order_id,order_date,product_id,category_id 
+	--  from order_details 
+	--  left join product 
+	--  on product_id=id;
+
+    -- -- VIEW3: Creating view for product category and VIEW2 for Maximum order plcaed category
+	--  create view category_order_details 
+	--  as select id , name , order_date , order_id 
+	--  from product_category 
+	--  right join product_order_details 
+	--  on id=category_id;
+
+    -- -- VIEW4: Creating view for product category and VIEW2 for MINIMUM order plcaed category
+	--  create view category_order_details1 
+	--  as select id , name , order_date , order_id 
+	--  from product_category 
+	--  left join product_order_details 
+	--  on id=category_id;
+	
+    -- MAXIMUM ORDER PLACED CATEORY
+	--  select 	id , name , count(order_id) 
+	--  from category_order_details 
+	--  group by id,name 
+	--  order by count(order_id) desc limit 1;
+
+     -- MINIMUM ORDER PLACED CATEORY    
+	--  select 	id , name , count(order_id) 
+	--  from category_order_details1 
+	--  group by id,name 
+	--  order by count(order_id) asc limit 1;
+
+	--  insert into product_category values(3,'tools','all the tools related to hardware');
+	--  insert into product values (5,'hammer','hammer for hamming',200,50,3);
+	-- 	select * from product;
+	--  select * from product_category;
+   
+
+
+-- -- 12. find the user who have not placed any order till now
+
+	--  select * from users where id not in (select user_id from orders);
+
+-- -- 13.find the users whos paymets has failed.
+-- -- select * from users 
+   -- inner join orders on users.id=orders.id 
+   -- inner join transaction on orders.id=transaction.order_id
+   -- where status='false' ;
+
+-- -- 14. find the users whos birthday is today
+	-- select * from users where
+	--     DATE_PART('day', dob) = date_part('day', CURRENT_DATE)
+	-- AND DATE_PART('month',dob) = date_part('month', CURRENT_DATE);

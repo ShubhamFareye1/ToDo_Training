@@ -15,13 +15,13 @@ public class UserController {
     @Autowired
     Data data;
 
-    @GetMapping("/user-list")
+    @GetMapping("/list")
     @CrossOrigin(origins = "http://localhost:3000")
     public List<User> userList(){
         return data.users;
     }
 
-    @GetMapping("/userName")
+    @GetMapping("")
     @CrossOrigin(origins = "http://localhost:3000")
     public User user(@RequestParam String userMail) throws UserNotFoundException {
         System.out.println(userMail);
@@ -33,7 +33,7 @@ public class UserController {
         throw new UserNotFoundException("No user exist for this email");
     }
 
-    @PostMapping("/add")
+    @PostMapping("")
     @CrossOrigin(origins = "http://localhost:3000")
     public String add(@Valid @RequestBody User name) throws UserAlredyExistsException {
          name.setId(Data.id);
@@ -48,7 +48,7 @@ public class UserController {
         return "Data inserted successfully";
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("")
     @CrossOrigin(origins = "http://localhost:3000")
     public String delete(@RequestParam String email) throws RuntimeException {
 
@@ -67,7 +67,7 @@ public class UserController {
     public int addNumber(int a, int b){
         return a+b;
     }
-    @PutMapping("/update")
+    @PutMapping("")
     @CrossOrigin(origins = "http://localhost:3000")
     public String update(@RequestBody User user1) throws UserNotFoundException {
         String u = "User Not Available";
