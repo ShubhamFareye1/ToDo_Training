@@ -38,13 +38,15 @@ class ToDoControllerTest {
         todo.setDueDate(LocalDate.parse("2022-10-30"));
         RestTemplate rs = new RestTemplate();
         String email = "shubham.patidar1@getfareye.com";
-        String json = rs.getForObject("http://localhost:8080/todo1?gmail="+email,String.class);
-        System.out.println(json);
+        ToDo[] todoObj = rs.getForObject("http://localhost:8080/todo1?gmail="+email,ToDo[].class);
+        System.out.println(todoObj.toString());
 //        JSONParser parser = new JSONParser();
+        // Gson
+        // Jackson
 //        JSONObject json1 = (JSONObject) parser.parse(json);
-         JSONParser parser = new JSONParser();
-         Object obj  = parser.parse(json);
-       //  assertEquals(obj.toString(),todo.getUserMail());
+//         JSONParser parser = new JSONParser();
+//         Object obj  = parser.parse(json);
+         assertEquals(todoObj[0].getUserMail(),todo.getUserMail());
     }
 
     @Test
