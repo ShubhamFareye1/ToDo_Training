@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 //@CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/todo")
+@RequestMapping("/todo1")
 public class ToDoController {
 
     @Autowired

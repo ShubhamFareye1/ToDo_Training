@@ -6,12 +6,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
-@Getter @Setter @NoArgsConstructor @ToString @TitleValidation
+@Getter @Setter @NoArgsConstructor @ToString @TitleValidation @Entity
 public class ToDo {
+    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @NotNull
+    private Integer userId;
     @NotNull
     private LocalDate dueDate;
     private LocalDate createdAt;
@@ -21,10 +28,10 @@ public class ToDo {
     @NotEmpty(message = "body : body should not be null")
     private String body;
 
-    @NotEmpty(message = "titile: title should not be null" )
+    @NotEmpty(message = "title: title should not be null" )
     private String title;
 
-    @NotEmpty(message = "ststus: status should be not empty")
+    @NotEmpty(message = "status: status should be not empty")
     private String status;
 
     @Email(message = "userMail: Entered wrong email")
@@ -33,7 +40,6 @@ public class ToDo {
     public LocalDate getDueDate() {
         return dueDate;
     }
-
     public void setDueDate(LocalDate dueDate) {
         LocalDateTime now = LocalDateTime.now();
         this.dueDate = dueDate;

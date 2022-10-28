@@ -21,7 +21,7 @@ class ToDoControllerTest {
         ToDo todo = new ToDo();
         todo.setTitle("diwali dhamaka");
         todo.setBody("diwali gift by Fareye");
-        todo.setUserMail("shubham.patidar2@getfareye.com");
+        todo.setUserMail("shubham.patidar1@getfareye.com");
         todo.setDueDate(LocalDate.parse("2022-10-30"));
         RestTemplate rs = new RestTemplate();
         ToDo[] todo1 = rs.getForObject("http://localhost:8080/todo/list",ToDo[].class);
@@ -40,12 +40,6 @@ class ToDoControllerTest {
         String email = "shubham.patidar1@getfareye.com";
         ToDo[] todoObj = rs.getForObject("http://localhost:8080/todo?gmail="+email,ToDo[].class);
         System.out.println(todoObj.toString());
-//        JSONParser parser = new JSONParser();
-        // Gson
-        // Jackson
-//        JSONObject json1 = (JSONObject) parser.parse(json);
-//         JSONParser parser = new JSONParser();
-//         Object obj  = parser.parse(json);
          assertEquals(todoObj[0].getUserMail(),todo.getUserMail());
     }
 
@@ -67,12 +61,12 @@ class ToDoControllerTest {
     void deleteTodo() {
         ToDo todo = new ToDo();
         todo.setTitle("diwali dhamaka");
+        todo.setBody("diwali gift by Fareye");
         todo.setUserMail("shubham.patidar1@getfareye.com");
+        todo.setDueDate(LocalDate.parse("2022-10-30"));
+        todo.setStatus("Not Completed Yet Complete it soon");
         RestTemplate rs = new RestTemplate();
         rs.delete("http://localhost:8080/todo",todo);
-       // rs.delete("http://localhost:8080/delete",todo);
-       // rs.delete("http://localhost:8080/delete",todo);
-
     }
 
     @Test

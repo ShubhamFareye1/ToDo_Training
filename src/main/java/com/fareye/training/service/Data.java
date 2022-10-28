@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class Data {
 
-    public static int id=1;
+    public static long id=1;
     public List<User> users = new ArrayList<>();
 
     public List<ToDo> toDoList = new ArrayList<>();

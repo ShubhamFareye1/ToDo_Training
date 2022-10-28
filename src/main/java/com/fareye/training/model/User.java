@@ -6,20 +6,24 @@ import com.fareye.training.utility.EncryptionDecryptionUsingHash;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Date;
 
 
-@Getter @Setter @NoArgsConstructor
+@Getter @Setter @NoArgsConstructor @Entity
 public class User {
-    int id;
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    Long id;
     @NotEmpty(message = "firstName: Firstname should not empty")
     private String firstName;
 
     private String lastName;
 
     @Email(message = "email: Entered mail is wrong")
+    @Column(unique = true)
     private String email;
 
     private boolean verified;
